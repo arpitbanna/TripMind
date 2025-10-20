@@ -12,18 +12,11 @@ const Features = () => {
       path: "/planner",
     },
     {
-      icon: Leaf,
-      title: "Eco Travel",
-      description: "Compare carbon footprints and choose sustainable transport options.",
-      color: "text-eco-green",
-      path: "/eco-score",
-    },
-    {
       icon: Users,
       title: "Local Connect",
       description: "Discover authentic experiences from local artisans and guides.",
       color: "text-secondary",
-      path: "/planner",
+      path: "/local-connect",
     },
     {
       icon: MapPin,
@@ -31,20 +24,6 @@ const Features = () => {
       description: "Uncover secret spots and off-the-beaten-path destinations.",
       color: "text-travel-blue",
       path: "/hidden-gems",
-    },
-    {
-      icon: Wallet,
-      title: "Expense Splitter",
-      description: "Track and split travel expenses effortlessly with your group.",
-      color: "text-primary",
-      path: "/expenses",
-    },
-    {
-      icon: Shield,
-      title: "Safety First",
-      description: "Real-time safety updates and emergency assistance at your fingertips.",
-      color: "text-destructive",
-      path: "/safety",
     },
   ];
 
@@ -61,7 +40,7 @@ const Features = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {features.map((feature, index) => (
             <Link key={index} to={feature.path}>
               <Card

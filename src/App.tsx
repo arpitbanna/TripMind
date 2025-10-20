@@ -10,6 +10,7 @@ import About from "./pages/About";
 import ExpenseSplitter from "./pages/ExpenseSplitter";
 import Safety from "./pages/Safety";
 import EcoScore from "./pages/EcoScore";
+import LocalConnect from "./pages/LocalConnect";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/expenses" element={<ExpenseSplitter />} />
           <Route path="/safety" element={<Safety />} />
           <Route path="/eco-score" element={<EcoScore />} />
+          <Route path="/local-connect" element={<LocalConnect />} />
           <Route path="/about" element={<About />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

@@ -25,7 +25,7 @@ const ExpenseSplitter = () => {
     : `Arpit owes Navo ₹${((totalNavo - perPerson)).toFixed(0)}`;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       <main className="flex-1 py-12 bg-gradient-card">
         <div className="container mx-auto px-4 max-w-5xl">

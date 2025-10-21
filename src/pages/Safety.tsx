@@ -6,7 +6,7 @@ import { Shield, Phone, MapPin, AlertCircle, MessageCircle } from "lucide-react"
 
 const Safety = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       <main className="flex-1 py-12 bg-gradient-card">
         <div className="container mx-auto px-4 max-w-5xl">

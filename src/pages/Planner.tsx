@@ -68,12 +68,43 @@ const Planner = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="from" className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4" />
+                      From
+                    </Label>
+                    <Input id="from" placeholder="Starting location" />
+                  </div>
+                  <div>
+                    <Label htmlFor="to" className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4" />
+                      To
+                    </Label>
+                    <Input id="to" placeholder="Destination" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="startDate" className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      Start Date
+                    </Label>
+                    <Input id="startDate" type="date" />
+                  </div>
+                  <div>
+                    <Label htmlFor="endDate" className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4" />
+                      End Date
+                    </Label>
+                    <Input id="endDate" type="date" />
+                  </div>
+                </div>
+
                 <div>
-                  <Label htmlFor="destination" className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
-                    Destination
-                  </Label>
-                  <Input id="destination" placeholder="Where do you want to go?" />
+                  <Label htmlFor="days">Number of Days</Label>
+                  <Input id="days" type="number" placeholder="7" min="1" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -94,23 +125,30 @@ const Planner = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="dates" className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
-                    Travel Dates
-                  </Label>
-                  <Input id="dates" placeholder="Select dates" type="text" />
-                </div>
-
-                <div>
-                  <Label htmlFor="interests">Interests</Label>
-                  <Input id="interests" placeholder="Adventure, Culture, Relaxation..." />
+                  <Label htmlFor="interests">Interests (auto-suggestions)</Label>
+                  <Input 
+                    id="interests" 
+                    placeholder="Type: Adventure, Culture, Relaxation..." 
+                    list="interest-suggestions"
+                  />
+                  <datalist id="interest-suggestions">
+                    <option value="Adventure" />
+                    <option value="Culture" />
+                    <option value="Relaxation" />
+                    <option value="Food & Cuisine" />
+                    <option value="Wildlife" />
+                    <option value="Photography" />
+                    <option value="Beach & Water Sports" />
+                    <option value="Mountains & Hiking" />
+                  </datalist>
                 </div>
 
                 <Button 
                   className="w-full bg-gradient-hero hover:shadow-hover"
                   onClick={() => setShowItinerary(true)}
                 >
-                  Generate Itinerary
+                  <Sparkles className="mr-2 h-5 w-5" />
+                  Smart Recommender
                 </Button>
 
                 {showItinerary && (

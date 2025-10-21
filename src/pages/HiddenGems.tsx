@@ -2,12 +2,16 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, MapPin, Star, Heart } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Sparkles, MapPin, Star, Heart, Navigation, Search, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 import localGemsImage from "@/assets/local-gems.jpg";
 
 const HiddenGems = () => {
   const [filter, setFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [distanceFilter, setDistanceFilter] = useState("all");
+  const [ratingFilter, setRatingFilter] = useState("all");
 
   const gems = [
     {
@@ -60,9 +64,29 @@ const HiddenGems = () => {
     },
   ];
 
-  const filteredGems = filter === "all" 
-    ? gems 
-    : gems.filter(gem => gem.category === filter);
+  const handleNearMe = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          alert(`Your location: ${position.coords.latitude}, ${position.coords.longitude}\nShowing gems near you!`);
+        },
+        () => {
+          alert("Unable to retrieve your location. Please enable location services.");
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  };
+
+  const filteredGems = gems.filter(gem => {
+    const matchesCategory = filter === "all" || gem.category === filter;
+    const matchesSearch = searchQuery === "" || 
+      gem.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      gem.location.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesRating = ratingFilter === "all" || gem.rating >= parseFloat(ratingFilter);
+    return matchesCategory && matchesSearch && matchesRating;
+  });
 
   const randomGem = gems[Math.floor(Math.random() * gems.length)];
 
@@ -79,34 +103,98 @@ const HiddenGems = () => {
               Discover secret spots and authentic local experiences
             </p>
 
-            {/* Spontaneity Button */}
-            <Button 
-              size="lg" 
-              className="bg-gradient-hero hover:shadow-hover group"
-              onClick={() => alert(`Suggested: ${randomGem.name} in ${randomGem.location}!`)}
-            >
-              <Sparkles className="mr-2 h-5 w-5 group-hover:rotate-180 transition-transform duration-500" />
-              Surprise Me!
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-6">
+              {/* Near Me Button */}
+              <Button 
+                size="lg" 
+                variant="outline"
+                onClick={handleNearMe}
+                className="gap-2"
+              >
+                <Navigation className="h-5 w-5" />
+                Near Me
+              </Button>
+
+              {/* Spontaneity Button */}
+              <Button 
+                size="lg" 
+                className="bg-gradient-hero hover:shadow-hover group"
+                onClick={() => alert(`Suggested: ${randomGem.name} in ${randomGem.location}!`)}
+              >
+                <Sparkles className="mr-2 h-5 w-5 group-hover:rotate-180 transition-transform duration-500" />
+                Surprise Me!
+              </Button>
+            </div>
+
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  placeholder="Search by destination or location..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 h-12 text-base"
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Filters */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8 animate-slide-up">
-            {[
-              { value: "all", label: "All Gems" },
-              { value: "relaxing", label: "Relaxing" },
-              { value: "adventure", label: "Adventure" },
-              { value: "cultural", label: "Cultural" },
-            ].map((item) => (
-              <Button
-                key={item.value}
-                variant={filter === item.value ? "default" : "outline"}
-                onClick={() => setFilter(item.value)}
-                className={filter === item.value ? "bg-gradient-hero" : ""}
-              >
-                {item.label}
-              </Button>
-            ))}
+          {/* Filters Section */}
+          <div className="mb-8 animate-slide-up">
+            <div className="flex items-center gap-2 mb-4">
+              <SlidersHorizontal className="h-5 w-5 text-primary" />
+              <h3 className="font-semibold">Filters</h3>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Category Filters */}
+              <div>
+                <p className="text-sm font-medium mb-2">Category</p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { value: "all", label: "All Gems" },
+                    { value: "relaxing", label: "Relaxing" },
+                    { value: "adventure", label: "Adventure" },
+                    { value: "cultural", label: "Cultural" },
+                  ].map((item) => (
+                    <Button
+                      key={item.value}
+                      variant={filter === item.value ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setFilter(item.value)}
+                      className={filter === item.value ? "bg-gradient-hero" : ""}
+                    >
+                      {item.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Rating Filter */}
+              <div>
+                <p className="text-sm font-medium mb-2">Minimum Rating</p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { value: "all", label: "All Ratings" },
+                    { value: "4.5", label: "4.5+" },
+                    { value: "4.7", label: "4.7+" },
+                    { value: "4.8", label: "4.8+" },
+                  ].map((item) => (
+                    <Button
+                      key={item.value}
+                      variant={ratingFilter === item.value ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setRatingFilter(item.value)}
+                      className={ratingFilter === item.value ? "bg-gradient-hero" : ""}
+                    >
+                      <Star className="h-3 w-3 mr-1 fill-yellow-400 text-yellow-400" />
+                      {item.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Gems Grid */}

@@ -37,7 +37,7 @@ const Navbar = () => {
     { path: "/eco-score", label: "Eco Score" },
   ];
 
-  const languages = ["ENGLISH", "ES", "FR", "DE", "HI"];
+  const languages = ["EN", "ES", "FR", "DE", "HI"];
 
   return (
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-md border-b border-border shadow-soft">

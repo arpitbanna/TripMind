@@ -27,6 +27,7 @@ const Navbar = () => {
   const mainNavLinks = [
     { path: "/", label: "Home" },
     { path: "/planner", label: "AI Trip Planner" },
+    { path: "/booking", label: "Booking" },
     { path: "/local-connect", label: "Local Connect" },
     { path: "/hidden-gems", label: "Hidden Gems" },
   ];

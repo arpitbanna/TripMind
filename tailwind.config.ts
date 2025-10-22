@@ -19,7 +19,9 @@ export default {
       colors: {
         'eco-green': 'hsl(var(--eco-green))',
         'eco-light': 'hsl(var(--eco-light))',
-        'travel-blue': 'hsl(var(--travel-blue))',
+        'teal': 'hsl(var(--teal))',
+        'turquoise': 'hsl(var(--turquoise))',
+        'soft-yellow': 'hsl(var(--soft-yellow))',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -106,6 +108,7 @@ export default {
       backgroundImage: {
         'gradient-hero': 'var(--gradient-hero)',
         'gradient-card': 'var(--gradient-card)',
+        'gradient-teal': 'var(--gradient-teal)',
       },
       boxShadow: {
         'soft': 'var(--shadow-soft)',

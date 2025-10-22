@@ -4,45 +4,67 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, MapPin, DollarSign, Users, Sparkles, Train, Car, Plane as PlaneIcon } from "lucide-react";
+import { Calendar, MapPin, DollarSign, Users, Sparkles, Plus, Minus, Leaf, Zap, Users as UsersGroup, Mountain, Compass } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import mapImage from "@/assets/map-routes.jpg";
 
 const Planner = () => {
+  const navigate = useNavigate();
   const [showItinerary, setShowItinerary] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [travelers, setTravelers] = useState(1);
+  const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
 
-  const mockItinerary = {
-    destination: "Bali, Indonesia",
-    duration: "7 Days",
-    budget: "₹50,000",
-    highlights: ["Ubud Rice Terraces", "Sacred Monkey Forest", "Tanah Lot Temple", "Beach Hopping"],
+  const preferences = [
+    { id: "solo", label: "Solo", icon: Users },
+    { id: "group", label: "Group", icon: UsersGroup },
+    { id: "eco", label: "Eco", icon: Leaf },
+    { id: "fast", label: "Fast", icon: Zap },
+    { id: "scenic", label: "Scenic", icon: Mountain },
+  ];
+
+  const togglePreference = (id: string) => {
+    setSelectedPreferences(prev =>
+      prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]
+    );
   };
 
-  const transportOptions = [
+  const handleSmartRecommender = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setShowItinerary(true);
+    }, 2000);
+  };
+
+  const mockItinerary = [
     {
-      type: "Train",
-      icon: Train,
-      price: "₹2,500",
-      duration: "12h",
-      co2: "15kg",
-      eco: "best",
+      day: 1,
+      title: "Arrive in Ubud",
+      places: ["Ubud Rice Terraces", "Sacred Monkey Forest"],
+      distance: "25km",
+      time: "6h",
+      mode: "Bus",
+      aiTip: "Visit rice terraces at sunrise for best photos and fewer crowds",
     },
     {
-      type: "Flight",
-      icon: PlaneIcon,
-      price: "₹8,500",
-      duration: "2h",
-      co2: "85kg",
-      eco: "high",
+      day: 2,
+      title: "Cultural Exploration",
+      places: ["Tanah Lot Temple", "Uluwatu Temple"],
+      distance: "40km",
+      time: "8h",
+      mode: "Scooter",
+      aiTip: "Eco-friendly scooter rental available - saves 60% CO₂",
     },
     {
-      type: "Cab",
-      icon: Car,
-      price: "₹4,200",
-      duration: "8h",
-      co2: "45kg",
-      eco: "medium",
+      day: 3,
+      title: "Beach Day",
+      places: ["Seminyak Beach", "Canggu Beach"],
+      distance: "15km",
+      time: "5h",
+      mode: "Bicycle",
+      aiTip: "Hidden gem: Local beachside café serves best smoothie bowls",
     },
   ];
 
@@ -50,125 +72,172 @@ const Planner = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       <main className="flex-1 py-12 bg-gradient-card">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-7xl">
           <div className="mb-8 animate-fade-in text-center">
             <h1 className="text-4xl font-bold mb-4">
-              <span className="bg-gradient-hero bg-clip-text text-transparent">AI Trip Planner</span>
+              <span className="bg-gradient-teal bg-clip-text text-transparent">AI Trip Planner</span>
             </h1>
-            <p className="text-muted-foreground">Let AI create your perfect itinerary</p>
+            <p className="text-muted-foreground">Let TripMind create your perfect itinerary</p>
+          </div>
+
+          {/* Preference Chips */}
+          <div className="flex flex-wrap justify-center gap-3 mb-8 animate-fade-in">
+            {preferences.map((pref) => (
+              <button
+                key={pref.id}
+                onClick={() => togglePreference(pref.id)}
+                className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all ${
+                  selectedPreferences.includes(pref.id)
+                    ? "bg-gradient-teal text-white shadow-hover scale-105"
+                    : "bg-card text-muted-foreground hover:bg-muted hover:scale-105"
+                }`}
+              >
+                <pref.icon className="h-4 w-4" />
+                {pref.label}
+              </button>
+            ))}
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Planning Form */}
-            <Card className="shadow-soft animate-slide-up">
+            <Card className="shadow-soft animate-slide-up backdrop-blur-sm bg-card/95">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                  Plan Your Trip
+                <CardTitle className="flex items-center gap-2 text-2xl">
+                  <Sparkles className="h-6 w-6 text-primary" />
+                  Plan Your Trip ✈️
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="from" className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
-                      From
-                    </Label>
-                    <Input id="from" placeholder="Starting location" />
-                  </div>
-                  <div>
-                    <Label htmlFor="to" className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
-                      To
-                    </Label>
-                    <Input id="to" placeholder="Destination" />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="startDate" className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      Start Date
-                    </Label>
-                    <Input id="startDate" type="date" />
-                  </div>
-                  <div>
-                    <Label htmlFor="endDate" className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      End Date
-                    </Label>
-                    <Input id="endDate" type="date" />
-                  </div>
-                </div>
-
+              <CardContent className="space-y-5">
                 <div>
-                  <Label htmlFor="days">Number of Days</Label>
-                  <Input id="days" type="number" placeholder="7" min="1" />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="budget" className="flex items-center gap-2">
-                      <DollarSign className="h-4 w-4" />
-                      Budget
-                    </Label>
-                    <Input id="budget" placeholder="₹50,000" type="number" />
-                  </div>
-                  <div>
-                    <Label htmlFor="travelers" className="flex items-center gap-2">
-                      <Users className="h-4 w-4" />
-                      Travelers
-                    </Label>
-                    <Input id="travelers" placeholder="2" type="number" />
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="interests">Interests (auto-suggestions)</Label>
+                  <Label htmlFor="from" className="flex items-center gap-2 mb-2">
+                    <MapPin className="h-4 w-4 text-primary" />
+                    Starting Location
+                  </Label>
                   <Input 
-                    id="interests" 
-                    placeholder="Type: Adventure, Culture, Relaxation..." 
-                    list="interest-suggestions"
+                    id="from" 
+                    placeholder="Enter city or location" 
+                    className="h-12"
+                    list="location-suggestions"
                   />
-                  <datalist id="interest-suggestions">
-                    <option value="Adventure" />
-                    <option value="Culture" />
-                    <option value="Relaxation" />
-                    <option value="Food & Cuisine" />
-                    <option value="Wildlife" />
-                    <option value="Photography" />
-                    <option value="Beach & Water Sports" />
-                    <option value="Mountains & Hiking" />
+                  <datalist id="location-suggestions">
+                    <option value="New Delhi, India" />
+                    <option value="Mumbai, India" />
+                    <option value="Bengaluru, India" />
                   </datalist>
                 </div>
 
                 <Button 
-                  className="w-full bg-gradient-hero hover:shadow-hover"
-                  onClick={() => setShowItinerary(true)}
+                  variant="outline" 
+                  className="w-full border-dashed hover:bg-primary/5"
                 >
-                  <Sparkles className="mr-2 h-5 w-5" />
-                  Smart Recommender
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Stop
                 </Button>
 
-                {showItinerary && (
-                  <div className="mt-6 p-4 bg-accent/50 rounded-lg animate-fade-in">
-                    <h3 className="font-semibold mb-3 text-lg">Your Itinerary Preview</h3>
-                    <div className="space-y-2 text-sm">
-                      <p><strong>Destination:</strong> {mockItinerary.destination}</p>
-                      <p><strong>Duration:</strong> {mockItinerary.duration}</p>
-                      <p><strong>Budget:</strong> {mockItinerary.budget}</p>
-                      <div>
-                        <strong>Highlights:</strong>
-                        <ul className="list-disc list-inside mt-1">
-                          {mockItinerary.highlights.map((item, i) => (
-                            <li key={i}>{item}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
+                <div>
+                  <Label htmlFor="to" className="flex items-center gap-2 mb-2">
+                    <Compass className="h-4 w-4 text-primary" />
+                    Destination
+                  </Label>
+                  <Input 
+                    id="to" 
+                    placeholder="Where do you want to go?" 
+                    className="h-12"
+                    list="location-suggestions"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="days" className="mb-2 block">Trip Duration (Days)</Label>
+                    <Input id="days" type="number" placeholder="7" min="1" className="h-12" />
                   </div>
-                )}
+                  <div>
+                    <Label className="mb-2 block">Optional Date Range</Label>
+                    <Input type="date" className="h-12" />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="budget" className="flex items-center gap-2 mb-2">
+                    <DollarSign className="h-4 w-4 text-primary" />
+                    Budget (₹)
+                  </Label>
+                  <Input 
+                    id="budget" 
+                    placeholder="50,000" 
+                    type="number" 
+                    className="h-12"
+                  />
+                </div>
+
+                <div>
+                  <Label className="flex items-center gap-2 mb-3">
+                    <Users className="h-4 w-4 text-primary" />
+                    Number of Travelers
+                  </Label>
+                  <div className="flex items-center gap-4">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setTravelers(Math.max(1, travelers - 1))}
+                      className="h-12 w-12"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="text-2xl font-semibold min-w-[3rem] text-center">
+                      {travelers}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setTravelers(travelers + 1)}
+                      className="h-12 w-12"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="interests" className="mb-2 block">
+                    Interests (auto-suggestions)
+                  </Label>
+                  <Input 
+                    id="interests" 
+                    placeholder="Type: beaches, mountains, heritage..." 
+                    className="h-12"
+                    list="interest-suggestions"
+                  />
+                  <datalist id="interest-suggestions">
+                    <option value="Beaches" />
+                    <option value="Mountains" />
+                    <option value="Heritage & Culture" />
+                    <option value="Adventure Sports" />
+                    <option value="Food & Cuisine" />
+                    <option value="Wildlife Safari" />
+                    <option value="Photography" />
+                    <option value="Relaxation & Wellness" />
+                  </datalist>
+                </div>
+
+                <Button 
+                  className="w-full h-14 text-lg font-bold bg-gradient-teal hover:shadow-hover transform hover:scale-105 transition-all"
+                  onClick={handleSmartRecommender}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
+                      Planning your route...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="mr-2 h-5 w-5" />
+                      Smart Recommender
+                    </>
+                  )}
+                </Button>
               </CardContent>
             </Card>
 
@@ -195,56 +264,102 @@ const Planner = () => {
             </Card>
           </div>
 
-          {/* Transport Options */}
-          {showItinerary && (
-            <div className="mt-8 animate-fade-in">
-              <Tabs defaultValue="transport" className="w-full">
-                <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
-                  <TabsTrigger value="transport">Transport</TabsTrigger>
-                  <TabsTrigger value="itinerary">Full Itinerary</TabsTrigger>
-                </TabsList>
-                <TabsContent value="transport" className="mt-6">
-                  <div className="grid md:grid-cols-3 gap-6">
-                    {transportOptions.map((option, index) => (
-                      <Card 
-                        key={index} 
-                        className={`shadow-soft hover:shadow-hover transition-all ${
-                          option.eco === "best" ? "ring-2 ring-eco-green" : ""
-                        }`}
-                      >
-                        <CardContent className="p-6">
-                          <div className="flex items-center justify-between mb-4">
-                            <option.icon className="h-8 w-8 text-primary" />
-                            {option.eco === "best" && (
-                              <span className="text-xs bg-eco-green text-white px-2 py-1 rounded-full">
-                                Best Eco
-                              </span>
-                            )}
-                          </div>
-                          <h3 className="font-semibold text-lg mb-2">{option.type}</h3>
-                          <div className="space-y-2 text-sm text-muted-foreground">
-                            <p><strong>Price:</strong> {option.price}</p>
-                            <p><strong>Duration:</strong> {option.duration}</p>
-                            <p><strong>CO₂:</strong> {option.co2}</p>
-                          </div>
-                          <Button className="w-full mt-4" variant="outline">
-                            Select
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </TabsContent>
-                <TabsContent value="itinerary">
-                  <Card>
+          {/* Loading State */}
+          {isLoading && (
+            <div className="mt-8 text-center animate-fade-in">
+              <div className="inline-flex items-center gap-3 px-6 py-4 bg-card rounded-full shadow-soft">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
+                <p className="text-lg font-medium bg-gradient-teal bg-clip-text text-transparent">
+                  TripMind is planning your perfect route...
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Day-by-Day Itinerary */}
+          {showItinerary && !isLoading && (
+            <div className="mt-8 animate-fade-in space-y-6">
+              <h2 className="text-3xl font-bold text-center mb-8">
+                Your Personalized Itinerary
+              </h2>
+              
+              <div className="space-y-4">
+                {mockItinerary.map((day, index) => (
+                  <Card key={index} className="shadow-soft hover:shadow-hover transition-all">
                     <CardContent className="p-6">
-                      <p className="text-center text-muted-foreground">
-                        Detailed day-by-day itinerary will appear here
-                      </p>
+                      <div className="flex flex-col md:flex-row gap-6">
+                        <div className="flex-shrink-0">
+                          <div className="w-20 h-20 rounded-full bg-gradient-teal flex items-center justify-center text-white">
+                            <span className="text-2xl font-bold">Day {day.day}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold mb-3">{day.title}</h3>
+                          <div className="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                              <p className="text-sm text-muted-foreground mb-2">Places to Visit:</p>
+                              <ul className="space-y-1">
+                                {day.places.map((place, i) => (
+                                  <li key={i} className="flex items-center gap-2">
+                                    <MapPin className="h-4 w-4 text-primary" />
+                                    <span>{place}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div className="space-y-2">
+                              <p className="flex items-center gap-2">
+                                <Compass className="h-4 w-4 text-primary" />
+                                <strong>Distance:</strong> {day.distance}
+                              </p>
+                              <p className="flex items-center gap-2">
+                                <Calendar className="h-4 w-4 text-primary" />
+                                <strong>Time:</strong> {day.time}
+                              </p>
+                              <p className="flex items-center gap-2">
+                                <MapPin className="h-4 w-4 text-primary" />
+                                <strong>Travel Mode:</strong> {day.mode}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="p-4 bg-accent/20 rounded-lg border-l-4 border-primary">
+                            <p className="flex items-start gap-2">
+                              <Sparkles className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                              <span><strong>AI Tip:</strong> {day.aiTip}</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
-                </TabsContent>
-              </Tabs>
+                ))}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-4 justify-center pt-6">
+                <Button 
+                  className="h-12 px-8 text-lg font-semibold bg-gradient-teal hover:shadow-hover"
+                  onClick={() => navigate('/booking')}
+                >
+                  Save & Continue to Booking
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="h-12 px-8 text-lg font-semibold"
+                  onClick={() => setShowItinerary(false)}
+                >
+                  Edit Route
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="h-12 px-8 text-lg font-semibold border-eco-green text-eco-green hover:bg-eco-light"
+                >
+                  <Leaf className="h-5 w-5 mr-2" />
+                  Replan with Eco Mode
+                </Button>
+              </div>
             </div>
           )}
         </div>

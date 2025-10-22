@@ -26,6 +26,7 @@ const Navbar = () => {
 
   const mainNavLinks = [
     { path: "/", label: "Home" },
+    { path: "/about", label: "About" },
     { path: "/planner", label: "AI Trip Planner" },
     { path: "/booking", label: "Booking" },
     { path: "/local-connect", label: "Local Connect" },
@@ -84,15 +85,6 @@ const Navbar = () => {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-
-            <Link
-              to="/about"
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                isActive("/about") ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              About
-            </Link>
           </div>
 
           {/* Right Side Actions */}
@@ -140,7 +132,9 @@ const Navbar = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-popover z-50">
-                  <DropdownMenuItem>Dashboard</DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard">Dashboard</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem>Settings</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
                     Logout
@@ -149,11 +143,11 @@ const Navbar = () => {
               </DropdownMenu>
             ) : (
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => setIsLoggedIn(true)}>
-                  Login
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/auth">Login</Link>
                 </Button>
-                <Button size="sm" className="bg-gradient-hero hover:shadow-hover transition-shadow">
-                  Sign Up
+                <Button size="sm" className="bg-gradient-hero hover:shadow-hover transition-shadow" asChild>
+                  <Link to="/auth">Sign Up</Link>
                 </Button>
               </div>
             )}
@@ -197,16 +191,6 @@ const Navbar = () => {
                   ))}
                 </div>
 
-                <Link
-                  to="/about"
-                  onClick={() => setIsOpen(false)}
-                  className={`text-sm font-medium transition-colors hover:text-primary ${
-                    isActive("/about") ? "text-primary" : "text-muted-foreground"
-                  }`}
-                >
-                  About
-                </Link>
-
                 <div className="border-t border-border pt-4 mt-2 flex items-center gap-3">
                   <Button
                     variant="outline"
@@ -239,14 +223,18 @@ const Navbar = () => {
 
                 {!isLoggedIn ? (
                   <div className="flex flex-col gap-2 mt-4">
-                    <Button variant="outline" onClick={() => setIsLoggedIn(true)}>
-                      Login
+                    <Button variant="outline" asChild>
+                      <Link to="/auth">Login</Link>
                     </Button>
-                    <Button className="bg-gradient-hero">Sign Up</Button>
+                    <Button className="bg-gradient-hero" asChild>
+                      <Link to="/auth">Sign Up</Link>
+                    </Button>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2 mt-4">
-                    <Button variant="outline">Dashboard</Button>
+                    <Button variant="outline" asChild>
+                      <Link to="/dashboard">Dashboard</Link>
+                    </Button>
                     <Button variant="outline">Settings</Button>
                     <Button variant="outline" onClick={() => setIsLoggedIn(false)}>
                       Logout

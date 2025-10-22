@@ -1,10 +1,13 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import LoadingScreen from "@/components/LoadingScreen";
+import MapPicker from "@/components/MapPicker";
+import TravelBuddiesModal from "@/components/TravelBuddiesModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar, MapPin, DollarSign, Users, Sparkles, Plus, Minus, Leaf, Zap, Users as UsersGroup, Mountain, Compass } from "lucide-react";
+import { Calendar, MapPin, DollarSign, Users, Sparkles, Plus, Minus, Leaf, Zap, Users as UsersGroup, Mountain, Compass, Map } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import mapImage from "@/assets/map-routes.jpg";
@@ -15,6 +18,11 @@ const Planner = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [travelers, setTravelers] = useState(1);
   const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
+  const [mapPickerOpen, setMapPickerOpen] = useState(false);
+  const [selectedLocationField, setSelectedLocationField] = useState<"from" | "to">("from");
+  const [fromLocation, setFromLocation] = useState("");
+  const [toLocation, setToLocation] = useState("");
+  const [travelBuddiesOpen, setTravelBuddiesOpen] = useState(false);
 
   const preferences = [
     { id: "solo", label: "Solo", icon: Users },
@@ -36,6 +44,19 @@ const Planner = () => {
       setIsLoading(false);
       setShowItinerary(true);
     }, 2000);
+  };
+
+  const handleMapPicker = (field: "from" | "to") => {
+    setSelectedLocationField(field);
+    setMapPickerOpen(true);
+  };
+
+  const handleLocationSelect = (location: string) => {
+    if (selectedLocationField === "from") {
+      setFromLocation(location);
+    } else {
+      setToLocation(location);
+    }
   };
 
   const mockItinerary = [
@@ -109,15 +130,29 @@ const Planner = () => {
               </CardHeader>
               <CardContent className="space-y-5">
                 <div>
-                  <Label htmlFor="from" className="flex items-center gap-2 mb-2">
-                    <MapPin className="h-4 w-4 text-primary" />
-                    Starting Location
+                  <Label htmlFor="from" className="flex items-center justify-between mb-2">
+                    <span className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-primary" />
+                      Starting Location
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleMapPicker("from")}
+                      className="h-auto p-1 text-xs"
+                    >
+                      <Map className="h-3 w-3 mr-1" />
+                      Pick from Map
+                    </Button>
                   </Label>
                   <Input 
                     id="from" 
                     placeholder="Enter city or location" 
                     className="h-12"
                     list="location-suggestions"
+                    value={fromLocation}
+                    onChange={(e) => setFromLocation(e.target.value)}
                   />
                   <datalist id="location-suggestions">
                     <option value="New Delhi, India" />
@@ -135,15 +170,29 @@ const Planner = () => {
                 </Button>
 
                 <div>
-                  <Label htmlFor="to" className="flex items-center gap-2 mb-2">
-                    <Compass className="h-4 w-4 text-primary" />
-                    Destination
+                  <Label htmlFor="to" className="flex items-center justify-between mb-2">
+                    <span className="flex items-center gap-2">
+                      <Compass className="h-4 w-4 text-primary" />
+                      Destination
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleMapPicker("to")}
+                      className="h-auto p-1 text-xs"
+                    >
+                      <Map className="h-3 w-3 mr-1" />
+                      Pick from Map
+                    </Button>
                   </Label>
                   <Input 
                     id="to" 
                     placeholder="Where do you want to go?" 
                     className="h-12"
                     list="location-suggestions"
+                    value={toLocation}
+                    onChange={(e) => setToLocation(e.target.value)}
                   />
                 </div>
 
@@ -359,12 +408,32 @@ const Planner = () => {
                   <Leaf className="h-5 w-5 mr-2" />
                   Replan with Eco Mode
                 </Button>
+                <Button 
+                  variant="outline" 
+                  className="h-12 px-8 text-lg font-semibold border-primary text-primary hover:bg-primary/10"
+                  onClick={() => setTravelBuddiesOpen(true)}
+                >
+                  <UsersGroup className="h-5 w-5 mr-2" />
+                  Find Travel Buddies 🤝
+                </Button>
               </div>
             </div>
           )}
         </div>
       </main>
       <Footer />
+
+      {/* Modals */}
+      {isLoading && <LoadingScreen message="TripMind is planning your perfect route..." />}
+      <MapPicker 
+        open={mapPickerOpen} 
+        onOpenChange={setMapPickerOpen}
+        onLocationSelect={handleLocationSelect}
+      />
+      <TravelBuddiesModal
+        open={travelBuddiesOpen}
+        onOpenChange={setTravelBuddiesOpen}
+      />
     </div>
   );
 };

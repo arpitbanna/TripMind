@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Phone, MapPin, AlertCircle, MessageCircle } from "lucide-react";
+import { Shield, Phone, MapPin, AlertCircle, MessageCircle, Hospital, Pill } from "lucide-react";
 
 const Safety = () => {
   return (
@@ -51,14 +51,18 @@ const Safety = () => {
             <Card className="shadow-soft hover:shadow-hover transition-all animate-scale-in" style={{ animationDelay: "100ms" }}>
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="bg-primary/10 p-3 rounded-lg">
-                    <MapPin className="h-6 w-6 text-primary" />
+                  <div className="bg-primary/10 p-3 rounded-lg flex gap-2">
+                    <Hospital className="h-6 w-6 text-primary" />
+                    <Pill className="h-6 w-6 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold mb-2">Nearest Hospital</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Find medical facilities near your location
+                    <h3 className="font-semibold mb-2">Nearest Hospital & Medical</h3>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Find hospitals and pharmacies near your location
                     </p>
+                    <div className="w-full h-24 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg mb-3 flex items-center justify-center">
+                      <MapPin className="h-8 w-8 text-primary animate-bounce" />
+                    </div>
                     <Button variant="outline" className="w-full">
                       View on Map
                     </Button>
